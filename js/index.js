@@ -25,11 +25,11 @@ function getFilms() {
 }
 
 //update the number of tickets sold (1 field: PATCH)
-function updateFilmTickets() {
+function updateFilmTickets(id, ticketsSold) {
     return fetch(`http://localhost:3000/films/${id}`, {
         method: "PATCH",
         headers:{
-            "Content-Type": "application.json",
+            "Content-Type": "application/json",
             "Accept": "application/json",
         },
         body: JSON.stringify({ tickets_sold: ticketsSold })
@@ -96,6 +96,16 @@ async function displayFilmDetails(id) {
     //available tickets (capacity - tickets_sold)
     const availableTickets = film.capacity - film.tickets_sold;
     document.getElementById("ticket-num").textContent = availableTickets;
+
+    //update the buy button for the movie tickets
+    const buyButton = document.getElementById("buy-ticket");
+    if (availableTickets <= 0){
+        buyButton.disabled = true;
+            buyButton.textContent = "Sold Out";
+        } else {
+            buyButton.disabled = false;
+            buyButton.textContent = "Buy Ticket";
+        }
 }
 
 //display all movies in sidebar menu
@@ -113,8 +123,36 @@ async function displayFilms() {
     )
 }
 
+//buy ticket 
+async function buyTicket(){
+    if (!currentFilm) return; //the film name must be valid
+
+    const availableTickets = currentFilm.capacity - currentFilm.tickets_sold;
+    if (availableTickets <= 0) {
+        alert("No tickets available for this showing");
+        return;
+    }
+    try{
+    const newTicketsSold = currentFilm.tickets_sold + 1;
+    await updateFilmTickets(currentFilm.id, newTicketsSold); //update the tickets on server
+    await createTicket(currentFilm.id, 1); //create ticket record
+    // Refreshing the displays for updates
+    await displayFilmDetails(currentFilm.id);
+    await displayFilms();
+    alert("Ticket purchased successfully!");
+    } catch (error) {
+        alert("Failed to purchase ticket");
+        console.error("Error buying ticket:", error);
+    }
+}
+
 
 document.addEventListener("DOMContentLoaded", async function () {
     await displayFilmDetails("2");
     await displayFilms();
+
+    //buy ticket button event listener
+    document.getElementById("buy-ticket").addEventListener("click", function() {
+        buyTicket();
+    });
 })
