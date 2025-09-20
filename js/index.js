@@ -7,7 +7,7 @@ function getFilmById(id) {
     })
         .then(response => response.json())
         .then(data => data)
-        .catch (error => {
+        .catch(error => {
             console.error("Error loading film details:", error);
         })
 }
@@ -19,7 +19,7 @@ function getFilms() {
     })
         .then(response => response.json())
         .then(data => data)
-        .catch (error => {
+        .catch(error => {
             console.error("Error loading films:", error);
         })
 }
@@ -55,7 +55,7 @@ async function displayFilmDetails(id) {
             <button id="buy-ticket">Buy Ticket</button>
         </div>
         `;
-    
+
     document.getElementById("poster").src = film.poster;
     document.getElementById("title").textContent = film.title;
     document.getElementById("runtime").textContent = `${film.runtime} Minutes`;
@@ -67,6 +67,23 @@ async function displayFilmDetails(id) {
     document.getElementById("ticket-num").textContent = availableTickets;
 }
 
-document.addEventListener("DOMContentLoaded", async function(){
+//display all movies in sidebar menu
+async function displayFilms() {
+    const films = await getFilms();
+    const filmsContainer = document.getElementById("films");
+    filmsContainer.innerHTML = "";
+    films.forEach(film => {
+        filmsContainer.innerHTML += `
+            <li class="film item" data-film-id="${film.id}">
+                <span>${film.title}</span>
+            </li>
+        `
+    }
+    )
+}
+
+
+document.addEventListener("DOMContentLoaded", async function () {
     await displayFilmDetails("2");
+    await displayFilms();
 })
