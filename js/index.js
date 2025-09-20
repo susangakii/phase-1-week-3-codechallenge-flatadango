@@ -59,6 +59,18 @@ function deleteFilm(id){
     });
 }
 
+//update an entire movie
+function updateFilm(id, filmData) {
+    return fetch(`http://localhost:3000/films/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(filmData)
+    })
+    .then(response => response.json())
+    .then(data => data);
+}
 
 //******************************************************************//
 //OTHER FUNCTIONS
@@ -96,6 +108,7 @@ async function displayFilmDetails(id) {
                     <p id="film-info"></p>
                 </div>
                 <button id="buy-ticket">Buy Ticket</button>
+                <button id="edit-button" onclick="dupdateFilmDetails('${id}')">Edit Movie</button>
             </div>
         </div>
         `;
@@ -142,9 +155,9 @@ async function displayFilms() {
         const soldOutClass = availableTickets <= 0 ? "sold-out" : "";
          //add delete buttons to each of the movies
         filmsContainer.innerHTML += `
-            <li class="film item ${soldOutClass}" data-film-id="${film.id}">
-                <span onclick="displayFilmDetails('${film.id}')">${film.title}</span>
-                <button class="delete-btn" onclick="removeFilm('${film.id}')">x</button>
+            <li class="film item ${soldOutClass}" data-film-id="${film.id}" onclick="displayFilmDetails('${film.id}')">
+                <span>${film.title}</span>
+                <button class="delete-btn" onclick="event.stopPropagation(); removeFilm('${film.id}')">x</button>
             </li>
             `;
     })
@@ -202,6 +215,59 @@ async function removeFilm(id) {
     } catch (error) {
         alert("Failed to Delete Film");
         console.error("Error Deleting Film:", error);
+    }
+}
+
+async function dupdateFilmDetails(id) {
+    try {
+        const film = await getFilmById(id);
+        currentFilm = film;        
+        // editable form with movie details
+        const movieInfo = document.querySelector("#movie-info");
+        movieInfo.innerHTML = `
+            <form id="update-form">
+                <img src="${film.poster}" class="movie-poster" alt="Movie Poster">
+                <div class="form-group">
+                    <label>Movie Title</label>
+                    <input type="text" name="title" value="${film.title}">
+                    <label>Runtime (minutes)</label>
+                    <input type="number" name="runtime" value="${film.runtime}">
+                    <label>Showtime</label>
+                    <input type="text" name="showtime" value="${film.showtime}">
+                    <label>Capacity</label>
+                    <input type="number" name="capacity" value="${film.capacity}">
+                    <label>Tickets Sold</label>
+                    <input type="number" name="tickets_sold" value="${film.tickets_sold}">
+                    <label>Description</label>
+                    <textarea name="description">${film.description}</textarea>
+                    <label>Poster URL</label>
+                    <input type="text" name="poster" value="${film.poster}">
+                </div>
+                <button type="submit">Update Movie</button>
+            </form>
+        `;
+        
+        // form submit handler to update the movie
+        const form = document.querySelector("#update-form");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const updatedFilm = {
+                title: form.title.value,
+                runtime: form.runtime.value,
+                showtime: form.showtime.value,
+                capacity: Number(form.capacity.value),
+                tickets_sold: Number(form.tickets_sold.value),
+                description: form.description.value,
+                poster: form.poster.value
+            };
+            
+            await updateFilm(id, updatedFilm);
+            await displayFilms();
+        });
+        
+    } catch (error) {
+        console.error("Error Updating Film Details:", error);
     }
 }
 
