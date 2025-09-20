@@ -32,9 +32,9 @@ async function displayFilmDetails(id) {
     //movie details
     const movieInfo = document.querySelector("#movie-info");
     movieInfo.innerHTML = `
-        <img id="poster" class="movie-poster" src="" alt="Movie Poster">
         <div class="movie-info">
             <h2 id="title"></h2>
+            <img id="poster" class="movie-poster" src="" alt="Movie Poster">
             <div class="movie-meta">
                 <div class="meta-item">
                     <strong>Runtime</strong>
@@ -68,5 +68,5 @@ async function displayFilmDetails(id) {
 }
 
 document.addEventListener("DOMContentLoaded", async function(){
-    
+    await displayFilmDetails("2");
 })
