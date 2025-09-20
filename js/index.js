@@ -77,27 +77,31 @@ async function displayFilmDetails(id) {
     //movie details
     const movieInfo = document.querySelector("#movie-info");
     movieInfo.innerHTML = `
-        <div class="movie-info">
-            <h2 id="title"></h2>
-            <img id="poster" class="movie-poster" src="" alt="Movie Poster">
-            <div class="movie-meta">
-                <div class="meta-item">
-                    <strong>Runtime</strong>
-                    <div id="runtime" class="meta-value"></div>
-                </div>
-                <div class="meta-item">
-                    <strong>Showtime</strong>
-                    <div id="showtime" class="meta-value"></div>
-                </div>
-                <div class="meta-item">
-                    <strong>Available Tickets</strong>
-                    <div id="ticket-num" class="meta-value"></div>
-                </div>
+        <div class="movie-content">
+            <div class="poster-section">
+                <img id="poster" class="movie-poster" src="" alt="Movie Poster">
+                <h2 id="title"></h2>
             </div>
-            <div class="description">
-                <p id="film-info"></p>
+            <div class="details-sidebar">
+                <div class="movie-meta">
+                    <div class="meta-item">
+                        <strong>Runtime</strong>
+                        <div id="runtime" class="meta-value"></div>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Showtime</strong>
+                        <div id="showtime" class="meta-value"></div>
+                    </div>
+                    <div class="meta-item">
+                        <strong>Available Tickets</strong>
+                        <div id="ticket-num" class="meta-value"></div>
+                    </div>
+                </div>
+                <div class="description">
+                    <p id="film-info"></p>
+                </div>
+                <button id="buy-ticket">Buy Ticket</button>
             </div>
-            <button id="buy-ticket">Buy Ticket</button>
         </div>
         `;
 
