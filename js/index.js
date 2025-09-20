@@ -77,7 +77,7 @@ async function displayFilms() {
             <li class="film item" data-film-id="${film.id}">
                 <span>${film.title}</span>
             </li>
-        `
+        `;
     }
     )
 }
