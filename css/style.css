@@ -44,6 +44,61 @@
     padding-bottom: 10px;
 }
 
+#films {
+    list-style: none;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+.film.item {
+    background: white;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid transparent;
+}
+
+.film.item:hover {
+    background-color: #424242;
+    color: white;
+    border-color: #272126;
+}
+
+.film.item.sold-out {
+    background-color: #ffebee;
+    color: #c62828;
+    cursor: not-allowed;
+}
+
+.film.item.sold-out:hover {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.film.item.selected {
+    background-color: #4ecdc4;
+    color: white;
+    border-color: #44a08d;
+}
+
+.delete-btn {
+    background-color: #ff4757;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.delete-btn:hover {
+    background-color: #ff3838;
+}
 
 .movie-details {
     flex: 2;
@@ -63,4 +118,16 @@
     margin: 0 auto 20px;
     display: block;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+#buy-ticket {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }

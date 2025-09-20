@@ -1,5 +1,8 @@
 let currentFilm = null;
 
+//******************************************************************//
+//FETCH FUNCTIONS
+
 //fetch single movie's details
 function getFilmById(id) {
     return fetch(`http://localhost:3000/films/${id}`, {
@@ -43,7 +46,7 @@ function updateFilmTickets(id, ticketsSold) {
 
 //create ticket record (POST)
 function createTicket(filmId, numberOfTickets){
-    return fetch(`http://localhost:3000/films`,{
+    return fetch(`http://localhost:3000/tickets`,{
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -54,6 +57,17 @@ function createTicket(filmId, numberOfTickets){
         })
     });
 }
+
+//delete film by id
+function deleteFilm(id){
+    return fetch(`http://localhost:3000/films/${id}`, {
+        method: "DELETE"
+    });
+}
+
+
+//******************************************************************//
+//OTHER FUNCTIONS
 
 //display single movie's details
 async function displayFilmDetails(id) {
@@ -97,7 +111,7 @@ async function displayFilmDetails(id) {
     const availableTickets = film.capacity - film.tickets_sold;
     document.getElementById("ticket-num").textContent = availableTickets;
 
-    //update the buy button for the movie tickets
+    //update the buy button for the movie tickets (availability-based)
     const buyButton = document.getElementById("buy-ticket");
     if (availableTickets <= 0){
         buyButton.disabled = true;
@@ -114,13 +128,16 @@ async function displayFilms() {
     const filmsContainer = document.getElementById("films");
     filmsContainer.innerHTML = "";
     films.forEach(film => {
+        const availableTickets = film.capacity - film.tickets_sold;
+        const soldOutClass = availableTickets <= 0 ? "sold-out" : "";
+         //add delete buttons to each of the movies
         filmsContainer.innerHTML += `
-            <li class="film item" data-film-id="${film.id}">
-                <span>${film.title}</span>
+            <li class="film item ${soldOutClass}" data-film-id="${film.id}">
+                <span onclick="displayFilmDetails('${film.id}')">${film.title}</span>
+                <button class="delete-btn" onclick="removeFilm('${film.id}')">x</button>
             </li>
-        `;
-    }
-    )
+            `;
+    })
 }
 
 //buy ticket 
@@ -129,7 +146,7 @@ async function buyTicket(){
 
     const availableTickets = currentFilm.capacity - currentFilm.tickets_sold;
     if (availableTickets <= 0) {
-        alert("No tickets available for this showing");
+        alert("No Tickets Available for this Showing");
         return;
     }
     try{
@@ -139,17 +156,56 @@ async function buyTicket(){
     // Refreshing the displays for updates
     await displayFilmDetails(currentFilm.id);
     await displayFilms();
-    alert("Ticket purchased successfully!");
+    alert("Ticket Purchased Successfully!");
     } catch (error) {
-        alert("Failed to purchase ticket");
-        console.error("Error buying ticket:", error);
+        alert("Failed to Purchase Ticket");
+        console.error("Error Buying Ticket:", error);
     }
 }
 
+//remove the film from list
+async function removeFilm(id) {
+    if (!confirm("Are You Sure You Want to Delete this Film?")) {
+        return;
+    }
+    try {
+        await deleteFilm(id);
+        await displayFilms(); //displayed after delete
+        
+        // load first available film after deletion of current film
+        if (currentFilm && currentFilm.id == id) {
+            const films = await getFilms();
+            if (films.length > 0) {
+                await displayFilmDetails(films[0].id);
+            } else {
+                document.getElementById("movie-info").style.display = "none";
+                document.getElementById("loading").innerHTML = "<p>No Movies Available</p>";
+                document.getElementById("loading").style.display = "block";
+            }
+        }
+        
+        alert("Film Deleted Successfully");
+        
+    } catch (error) {
+        alert("Failed to Delete Film");
+        console.error("Error Deleting Film:", error);
+    }
+}
+
+//******************************************************************//
+//EVENT LISTENERS
 
 document.addEventListener("DOMContentLoaded", async function () {
-    await displayFilmDetails("2");
     await displayFilms();
+    //loads the first film
+    try{
+        const films = await getFilms();
+        if (films.length > 0) {
+            await displayFilmDetails(films[0].id);
+        } 
+        }catch (error) {
+        console.error("Error Loading Initial Film:", error);
+    }
 
     //buy ticket button event listener
     document.getElementById("buy-ticket").addEventListener("click", function() {
