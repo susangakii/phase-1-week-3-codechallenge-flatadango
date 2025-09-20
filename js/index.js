@@ -24,6 +24,37 @@ function getFilms() {
         })
 }
 
+//update the number of tickets sold (1 field: PATCH)
+function updateFilmTickets() {
+    return fetch(`http://localhost:3000/films/${id}`, {
+        method: "PATCH",
+        headers:{
+            "Content-Type": "application.json",
+            "Accept": "application/json",
+        },
+        body: JSON.stringify({ tickets_sold: ticketsSold })
+    })
+        .then(response => response.json())
+        .then(data => data)
+        .catch(error => {
+            console.error("Error loading tickets:", error);
+        })
+}
+
+//create ticket record (POST)
+function createTicket(filmId, numberOfTickets){
+    return fetch(`http://localhost:3000/films`,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ 
+            film_id: filmId, 
+            number_of_tickets: numberOfTickets 
+        })
+    });
+}
+
 //display single movie's details
 async function displayFilmDetails(id) {
     const film = await getFilmById(id);
