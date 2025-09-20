@@ -9,10 +9,7 @@ function getFilmById(id) {
         method: "GET",
     })
         .then(response => response.json())
-        .then(data => data)
-        .catch(error => {
-            console.error("Error loading film details:", error);
-        })
+        .then(data => data);
 }
 
 //display a menu of all movies
@@ -21,10 +18,7 @@ function getFilms() {
         method: "GET",
     })
         .then(response => response.json())
-        .then(data => data)
-        .catch(error => {
-            console.error("Error loading films:", error);
-        })
+        .then(data => data);
 }
 
 //update the number of tickets sold (1 field: PATCH)
@@ -71,6 +65,7 @@ function deleteFilm(id){
 
 //display single movie's details
 async function displayFilmDetails(id) {
+    try{
     const film = await getFilmById(id);
     currentFilm = film;
 
@@ -124,10 +119,21 @@ async function displayFilmDetails(id) {
             buyButton.disabled = false;
             buyButton.textContent = "Buy Ticket";
         }
+        // Highlight selected film in sidebar
+    document.querySelectorAll('.film.item').forEach(item => {
+        item.classList.remove('selected');
+        if (item.dataset.filmId === film.id) {
+            item.classList.add('selected');
+        }
+    })
+    } catch (error) {
+        console.error("Error Loading Film Details:", error);
+    }
 }
 
 //display all movies in sidebar menu
 async function displayFilms() {
+    try{
     const films = await getFilms();
     const filmsContainer = document.getElementById("films");
     filmsContainer.innerHTML = "";
@@ -142,9 +148,12 @@ async function displayFilms() {
             </li>
             `;
     })
+    } catch (error) {
+        console.error("Error Loading Films:", error);
+    }
 }
 
-//buy ticket 
+//buy ticket (prevents if sold out) 
 async function buyTicket(){
     if (!currentFilm) return; //the film name must be valid
 
