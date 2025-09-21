@@ -108,7 +108,7 @@ async function displayFilmDetails(id) {
                     <p id="film-info"></p>
                 </div>
                 <button id="buy-ticket">Buy Ticket</button>
-                <button id="edit-button" onclick="dupdateFilmDetails('${id}')">Edit Movie</button>
+                <button id="edit-button" onclick="updateFilmDetails('${id}')">Edit Movie</button>
             </div>
         </div>
         `;
@@ -218,7 +218,7 @@ async function removeFilm(id) {
     }
 }
 
-async function dupdateFilmDetails(id) {
+async function updateFilmDetails(id) {
     try {
         const film = await getFilmById(id);
         currentFilm = film;        
@@ -243,7 +243,8 @@ async function dupdateFilmDetails(id) {
                     <label>Poster URL</label>
                     <input type="text" name="poster" value="${film.poster}">
                 </div>
-                <button type="submit">Update Movie</button>
+                <button class="btn" type="submit">Update Movie</button>
+                <button class="btn" type="button" onclick="displayFilmDetails('${id}')">Cancel</button>
             </form>
         `;
         
@@ -263,6 +264,7 @@ async function dupdateFilmDetails(id) {
             };
             
             await updateFilm(id, updatedFilm);
+            await displayFilmDetails(id);
             await displayFilms();
         });
         

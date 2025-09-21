@@ -120,6 +120,20 @@ body {
     background-color: #ff3838;
 }
 
+.btn {
+    background-color: #ff9d00;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.8rem;
+}
+
+.btn:hover{
+    background-color: #a25900;
+}
+
 .movie-details {
     flex: 2;
     background: white;
@@ -153,6 +167,12 @@ body {
 
 .details-sidebar {
     flex: 1;
+}
+.form-group{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
 }
 
 .movie-meta {
